@@ -19,6 +19,30 @@ func (h HopfieldNet) String() string {
 	return sb.String()
 }
 
+// Recall error corrects the argument with regard to
+// the weights in the hopfield network and returns the
+// error corrected pattern
+func (h HopfieldNet) Recall(pattern []float64) []float64 {
+
+	activation := make([]float64, len(pattern))
+
+	for epoch := 0; epoch < 10; epoch++ {
+
+		for i := range pattern {
+			sum := 0.0
+			for j := range pattern {
+				sum += h.Weights[i][j] * activation[j]
+			}
+			if sum >= 0 {
+				activation[i] = 1
+			} else {
+				activation[i] = -1
+			}
+		}
+	}
+	return activation
+}
+
 // NewNet creates a new Hopfield net and returns it.
 func NewNet(x []float64) HopfieldNet {
 	weights := make([][]float64, len(x))
@@ -39,8 +63,13 @@ func NewNet(x []float64) HopfieldNet {
 }
 
 func main() {
-	x := []float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1}
-	hNet := NewNet(x)
-	fmt.Print(hNet)
+	train := []float64{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
+	test := []float64{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, 1, 1, 1, -1}
+	hNet := NewNet(train)
+	//fmt.Print(hNet)
+
+	fmt.Println(hNet)
+	fmt.Println(train)
+	fmt.Print(hNet.Recall(test))
 
 }
