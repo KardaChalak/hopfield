@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 // HopfieldNet represents the weights between the neurons
@@ -11,11 +12,11 @@ type HopfieldNet struct {
 }
 
 func (h HopfieldNet) String() string {
-	var ret string
+	var sb strings.Builder
 	for _, v := range h.Weights {
-		ret += fmt.Sprintf("%v\n", v)
+		sb.WriteString(fmt.Sprintf("%v\n", v))
 	}
-	return ret
+	return sb.String()
 }
 
 // NewNet creates a new Hopfield net and returns it.
