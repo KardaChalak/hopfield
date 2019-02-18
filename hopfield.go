@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -23,7 +24,10 @@ func (h HopfieldNet) String() string {
 // Recall error corrects the argument with regard to
 // the weights in the hopfield network and returns the
 // error corrected pattern
-func (h HopfieldNet) Recall(pattern []int) []int {
+func (h HopfieldNet) Recall(pattern []int) ([]int, error) {
+	if h.NrNeurons != len(pattern) {
+		return []int{}, errors.New("The pattern array has to have the same length as the number of neurons")
+	}
 
 	activation := make([]int, len(pattern))
 
@@ -41,12 +45,15 @@ func (h HopfieldNet) Recall(pattern []int) []int {
 			}
 		}
 	}
-	return activation
+	return activation, nil
 }
 
 // InsertPattern inserts a new pattern to the hopfield network
 // and return a true boolean if it was successfull
-func (h HopfieldNet) InsertPattern(pattern []int) bool {
+func (h HopfieldNet) InsertPattern(pattern []int) (bool, error) {
+	if h.NrNeurons != len(pattern) {
+		return false, errors.New("The pattern array has to have the same length as the number of neurons")
+	}
 
 	for i := 0; i < h.NrNeurons; i++ {
 		for j := 0; j < h.NrNeurons; j++ {
@@ -58,7 +65,7 @@ func (h HopfieldNet) InsertPattern(pattern []int) bool {
 		}
 	}
 
-	return true
+	return true, nil
 }
 
 // NewNet creates a new Hopfield net and returns it.
@@ -75,14 +82,11 @@ func main() {
 	train2 := []int{1, 1, 1, 1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
 	train3 := []int{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
 	test := []int{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1}
-	hNet := NewNet(25)
+	hNet := NewNet(24)
 	hNet.InsertPattern(train1)
 	hNet.InsertPattern(train2)
 	hNet.InsertPattern(train3)
-	//fmt.Print(hNet)
 
-	fmt.Println(hNet)
 	fmt.Println(train1)
 	fmt.Println(hNet.Recall(test))
-
 }
