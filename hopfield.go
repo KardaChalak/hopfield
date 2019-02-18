@@ -8,7 +8,8 @@ import (
 // HopfieldNet represents the weights between the neurons
 // Should be a symmetrical matrix
 type HopfieldNet struct {
-	Weights [][]float64
+	Weights   [][]float64
+	NrNeurons int
 }
 
 func (h HopfieldNet) String() string {
@@ -43,33 +44,45 @@ func (h HopfieldNet) Recall(pattern []float64) []float64 {
 	return activation
 }
 
-// NewNet creates a new Hopfield net and returns it.
-func NewNet(x []float64) HopfieldNet {
-	weights := make([][]float64, len(x))
-	for i := range x {
-		weights[i] = make([]float64, len(x))
-	}
-	for i, v := range x {
-		for j, w := range x {
-			weights[i][j] = v * w
+// InsertPattern inserts a new pattern to the hopfield network
+// and return a true boolean if it was successfull
+func (h HopfieldNet) InsertPattern(pattern []float64) bool {
 
+	for i := 0; i < h.NrNeurons; i++ {
+		for j := 0; j < h.NrNeurons; j++ {
+			h.Weights[i][j] += pattern[i] * pattern[j]
 			if i == j {
-				weights[i][j] = 0
+				// no self connection
+				h.Weights[i][j] = 0
 			}
 		}
 	}
 
-	return HopfieldNet{weights}
+	return true
+}
+
+// NewNet creates a new Hopfield net and returns it.
+func NewNet(NrNeurons int) HopfieldNet {
+	weights := make([][]float64, NrNeurons)
+	for i := range weights {
+		weights[i] = make([]float64, NrNeurons)
+	}
+	return HopfieldNet{weights, NrNeurons}
 }
 
 func main() {
-	train := []float64{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
-	test := []float64{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, 1, 1, 1, -1}
-	hNet := NewNet(train)
+	train1 := []float64{1, 1, 1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1}
+	train2 := []float64{1, 1, 1, 1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
+	train3 := []float64{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
+	test := []float64{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1}
+	hNet := NewNet(25)
+	hNet.InsertPattern(train1)
+	hNet.InsertPattern(train2)
+	hNet.InsertPattern(train3)
 	//fmt.Print(hNet)
 
 	fmt.Println(hNet)
-	fmt.Println(train)
-	fmt.Print(hNet.Recall(test))
+	fmt.Println(train1)
+	fmt.Println(hNet.Recall(test))
 
 }
