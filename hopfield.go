@@ -13,9 +13,9 @@ type Net struct {
 	NrNeurons int
 }
 
-func (net Net) String() string {
+func (n Net) String() string {
 	var sb strings.Builder
-	for _, v := range net.Weights {
+	for _, v := range n.Weights {
 		sb.WriteString(fmt.Sprintf("%v\n", v))
 	}
 	return sb.String()
@@ -24,8 +24,8 @@ func (net Net) String() string {
 // Recall error corrects the argument with regard to
 // the weights in the hopfield network and returns the
 // error corrected pattern
-func (net Net) Recall(pattern []int) ([]int, error) {
-	if net.NrNeurons != len(pattern) {
+func (n Net) Recall(pattern []int) ([]int, error) {
+	if n.NrNeurons != len(pattern) {
 		return []int{}, errors.New("The pattern array has to have the same length as the number of neurons")
 	}
 
@@ -36,7 +36,7 @@ func (net Net) Recall(pattern []int) ([]int, error) {
 		for i := range pattern {
 			sum := 0
 			for j := range pattern {
-				sum += net.Weights[i][j] * pattern[j]
+				sum += n.Weights[i][j] * pattern[j]
 			}
 			if sum >= 0 {
 				activation[i] = 1
@@ -49,17 +49,17 @@ func (net Net) Recall(pattern []int) ([]int, error) {
 }
 
 // InsertPattern inserts a new pattern to the hopfield network
-func (net Net) InsertPattern(pattern []int) error {
-	if net.NrNeurons != len(pattern) {
+func (n Net) InsertPattern(p []int) error {
+	if n.NrNeurons != len(p) {
 		return errors.New("The pattern array has to have the same length as the number of neurons")
 	}
 
-	for i := 0; i < net.NrNeurons; i++ {
-		for j := 0; j < net.NrNeurons; j++ {
-			net.Weights[i][j] += pattern[i] * pattern[j]
+	for i := 0; i < n.NrNeurons; i++ {
+		for j := 0; j < n.NrNeurons; j++ {
+			n.Weights[i][j] += p[i] * p[j]
 			if i == j {
 				// no self connection
-				net.Weights[i][j] = 0
+				n.Weights[i][j] = 0
 			}
 		}
 	}
@@ -67,10 +67,10 @@ func (net Net) InsertPattern(pattern []int) error {
 	return nil
 }
 
-// NewNet creates a new Hopfield net and returns it.
+// NewNet creates a new Hopfield Network and returns it.
 func NewNet(nrNeurons int) (Net, error) {
 	if nrNeurons < 0 {
-		return Net{}, errors.New("nrNeurons cant be negative")
+		return Net{}, errors.New("nrNeurons can't be negative")
 	}
 	weights := make([][]int, nrNeurons)
 	for i := range weights {

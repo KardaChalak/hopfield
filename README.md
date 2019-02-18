@@ -4,7 +4,7 @@
 A (unoptimized) go version of the project described on <a href=http://chalak.se/> http://chalak.se/ </a> (Projects -> Associative Memory)
 This is a one day hack to start learning golang.
 
-A hopfield network can be used to correct distorted patterns. If we have a network with 1000 neurons it can remember around 138.
+A hopfield network can be used to correct distorted patterns. If we have a network with 1000 neurons it can remember around 138 patterns.
 The exact amount depends on the composition of the patterns.
 
 
@@ -12,8 +12,8 @@ The package is easy to use.
 It contains 2 methods and a "constructor" function ( + a String() string method).
 
 * func NewNet(nrNeurons int) (Net, error)
-* func (net Net) InsertPattern(pattern []int) error
-* func (net Net) Recall(pattern []int) ([]int, error)
+* func (n Net) InsertPattern(p []int) error
+* func (n Net) Recall(pattern []int) ([]int, error)
 
 If the possible errors are disregarded we get this example:
 
