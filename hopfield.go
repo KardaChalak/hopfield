@@ -8,7 +8,7 @@ import (
 // HopfieldNet represents the weights between the neurons
 // Should be a symmetrical matrix
 type HopfieldNet struct {
-	Weights   [][]float64
+	Weights   [][]int
 	NrNeurons int
 }
 
@@ -23,14 +23,14 @@ func (h HopfieldNet) String() string {
 // Recall error corrects the argument with regard to
 // the weights in the hopfield network and returns the
 // error corrected pattern
-func (h HopfieldNet) Recall(pattern []float64) []float64 {
+func (h HopfieldNet) Recall(pattern []int) []int {
 
-	activation := make([]float64, len(pattern))
+	activation := make([]int, len(pattern))
 
 	for epoch := 0; epoch < 10; epoch++ {
 
 		for i := range pattern {
-			sum := 0.0
+			sum := 0
 			for j := range pattern {
 				sum += h.Weights[i][j] * activation[j]
 			}
@@ -46,7 +46,7 @@ func (h HopfieldNet) Recall(pattern []float64) []float64 {
 
 // InsertPattern inserts a new pattern to the hopfield network
 // and return a true boolean if it was successfull
-func (h HopfieldNet) InsertPattern(pattern []float64) bool {
+func (h HopfieldNet) InsertPattern(pattern []int) bool {
 
 	for i := 0; i < h.NrNeurons; i++ {
 		for j := 0; j < h.NrNeurons; j++ {
@@ -63,18 +63,18 @@ func (h HopfieldNet) InsertPattern(pattern []float64) bool {
 
 // NewNet creates a new Hopfield net and returns it.
 func NewNet(NrNeurons int) HopfieldNet {
-	weights := make([][]float64, NrNeurons)
+	weights := make([][]int, NrNeurons)
 	for i := range weights {
-		weights[i] = make([]float64, NrNeurons)
+		weights[i] = make([]int, NrNeurons)
 	}
 	return HopfieldNet{weights, NrNeurons}
 }
 
 func main() {
-	train1 := []float64{1, 1, 1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1}
-	train2 := []float64{1, 1, 1, 1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
-	train3 := []float64{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
-	test := []float64{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1}
+	train1 := []int{1, 1, 1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1}
+	train2 := []int{1, 1, 1, 1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
+	train3 := []int{1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, 1, 1, 1, 1}
+	test := []int{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, 1, -1, 1}
 	hNet := NewNet(25)
 	hNet.InsertPattern(train1)
 	hNet.InsertPattern(train2)
