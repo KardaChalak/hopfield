@@ -6,16 +6,16 @@ import (
 	"strings"
 )
 
-// HopfieldNet represents the weights between the neurons
+// Net represents the weights between the neurons
 // Should be a symmetrical matrix
-type HopfieldNet struct {
+type Net struct {
 	Weights   [][]int
 	NrNeurons int
 }
 
-func (h HopfieldNet) String() string {
+func (net Net) String() string {
 	var sb strings.Builder
-	for _, v := range h.Weights {
+	for _, v := range net.Weights {
 		sb.WriteString(fmt.Sprintf("%v\n", v))
 	}
 	return sb.String()
@@ -24,8 +24,8 @@ func (h HopfieldNet) String() string {
 // Recall error corrects the argument with regard to
 // the weights in the hopfield network and returns the
 // error corrected pattern
-func (h HopfieldNet) Recall(pattern []int) ([]int, error) {
-	if h.NrNeurons != len(pattern) {
+func (net Net) Recall(pattern []int) ([]int, error) {
+	if net.NrNeurons != len(pattern) {
 		return []int{}, errors.New("The pattern array has to have the same length as the number of neurons")
 	}
 
@@ -36,7 +36,7 @@ func (h HopfieldNet) Recall(pattern []int) ([]int, error) {
 		for i := range pattern {
 			sum := 0
 			for j := range pattern {
-				sum += h.Weights[i][j] * pattern[j]
+				sum += net.Weights[i][j] * pattern[j]
 			}
 			if sum >= 0 {
 				activation[i] = 1
@@ -49,17 +49,17 @@ func (h HopfieldNet) Recall(pattern []int) ([]int, error) {
 }
 
 // InsertPattern inserts a new pattern to the hopfield network
-func (h HopfieldNet) InsertPattern(pattern []int) error {
-	if h.NrNeurons != len(pattern) {
+func (net Net) InsertPattern(pattern []int) error {
+	if net.NrNeurons != len(pattern) {
 		return errors.New("The pattern array has to have the same length as the number of neurons")
 	}
 
-	for i := 0; i < h.NrNeurons; i++ {
-		for j := 0; j < h.NrNeurons; j++ {
-			h.Weights[i][j] += pattern[i] * pattern[j]
+	for i := 0; i < net.NrNeurons; i++ {
+		for j := 0; j < net.NrNeurons; j++ {
+			net.Weights[i][j] += pattern[i] * pattern[j]
 			if i == j {
 				// no self connection
-				h.Weights[i][j] = 0
+				net.Weights[i][j] = 0
 			}
 		}
 	}
@@ -68,13 +68,13 @@ func (h HopfieldNet) InsertPattern(pattern []int) error {
 }
 
 // NewNet creates a new Hopfield net and returns it.
-func NewNet(nrNeurons int) (HopfieldNet, error) {
+func NewNet(nrNeurons int) (Net, error) {
 	if nrNeurons < 0 {
-		return HopfieldNet{}, errors.New("nrNeurons cant be negative")
+		return Net{}, errors.New("nrNeurons cant be negative")
 	}
 	weights := make([][]int, nrNeurons)
 	for i := range weights {
 		weights[i] = make([]int, nrNeurons)
 	}
-	return HopfieldNet{weights, nrNeurons}, nil
+	return Net{weights, nrNeurons}, nil
 }
