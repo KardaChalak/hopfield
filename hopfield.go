@@ -30,13 +30,14 @@ func (n Net) Recall(pattern []int) ([]int, error) {
 	}
 
 	activation := make([]int, len(pattern))
+	copy(activation, pattern)
 
-	for epoch := 0; epoch < 1; epoch++ {
+	for epoch := 0; epoch < 10; epoch++ {
 
 		for i := range pattern {
 			sum := 0
 			for j := range pattern {
-				sum += n.Weights[i][j] * pattern[j]
+				sum += n.Weights[i][j] * activation[j]
 			}
 			if sum >= 0 {
 				activation[i] = 1
